@@ -8,6 +8,7 @@ RUN go build -o start start.go
 
 FROM alpine:3.10
 LABEL author="leechao" mail="lic0914@163.com" MAINTAINER="leechao"
+RUN apk --no-cache add curl
 COPY --from=builder /app/start /
 COPY index.html /
 COPY index.txt /
