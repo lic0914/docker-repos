@@ -1,1 +1,0 @@
-Hi My friend！| hostname：{{hostname}} | Version 1.1
