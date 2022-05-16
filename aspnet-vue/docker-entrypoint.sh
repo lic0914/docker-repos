@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-nginxProc=$(ps -ef |grep -w nginx|grep -v grep|wc -l)
-if [ "$nginxProc" -le 0 ] ;then
-    nginx -g daemon off;
-fi
+# nginxProc=$(ps -ef |grep -w nginx|grep -v grep|wc -l)
+# if [ "$nginxProc" -le 0 ] ;then
+#     nginx -g daemon off;
+# fi
 
 update_config(){
    match=$1
@@ -12,13 +12,13 @@ update_config(){
    echo "$match $replace"
    line=$(cat nginx.conf -n | grep -A5 server  | grep $match | awk '{print $1}')
    echo $line
-#    if [ "$replace" == *"\/"* ] ;then
-#       echo "nice ok"
-#       #sed ''"$line"' s#'"$match"'*#'"$match"' '"$replace"'#' nginx.conf
-#    else
-#       sed ''"$line"' s/'"$match"'*/'"$match"' '"$replace"'/' nginx.conf
-     
-#    fi
+   if [[ "$replace" =~ .*"/".* ]] ;then
+      #echo "nice"
+      sed  ''"$line"' s#'"$match"'[^\{]\+#'"$match"' '"$replace"' #' nginx.conf
+   else
+     # sed ''"$line"' s/'"$match"'*/'"$match"' '"$replace"'/' nginx.conf
+     echo "hate"
+   fi
 
 }
 
@@ -42,12 +42,10 @@ echo "$i : ${args[i]}"
   if [ "$arg" == "--vue-prefix" ] ;then
     echo "vue-prefix $next"
     update_config "location" $next
-    continue
   fi
 
   if [ "$arg" == "--vue-index-dir" ] ;then
-    v=${args[$index+1]}
-    update_config "root" $v
+    update_config "root" "$next;"
     continue
   fi
 
@@ -59,4 +57,3 @@ done
 #--vue-prefix 修改nginx.conf
 #--dotnet  
 # nginx -V
-
