@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  es:
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    image: lic0914/elasticsearch:6.8.10
+    network_mode: bridge
+    container_name: es
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
