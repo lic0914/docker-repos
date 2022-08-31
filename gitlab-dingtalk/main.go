@@ -90,16 +90,20 @@ func SendDingtalk(req SendDingtalkRequest) []byte{
 func SendPipeline(m GitlabRequest) []byte{
     
     sb := strings.Builder{}
-    sb.WriteString("## "+m.Kind)
+
     sb.WriteString("\n ["+m.Project.Name)
     sb.WriteString("]("+m.Project.WebUrl+") ")
-    sb.WriteString("\n ")
-    sb.WriteString("#"+strconv.Itoa(m.ObjectAttributes.Id))
     sb.WriteString(" **"+m.ObjectAttributes.Status+"**")
+    sb.WriteString("\n ")
+
+    sb.WriteString(" "+m.Kind)
+    sb.WriteString(" [#"+strconv.Itoa(m.ObjectAttributes.Id)+"](")
+    sb.WriteString(m.Project.WebUrl+"/-/pipelines/"+strconv.Itoa(m.ObjectAttributes.Id)+")")
+   
     sb.WriteString("\n\n ")
-    sb.WriteString("["+string([]byte(m.Commit.Id)[:6]))
+    sb.WriteString("> ["+string([]byte(m.Commit.Id)[:6]))
     sb.WriteString("]("+m.Commit.Url+") "+m.Commit.Message)
-    sb.WriteString("\n [查看详情]("+m.Project.WebUrl+"/-/pipelines/"+strconv.Itoa(m.ObjectAttributes.Id)+")")
+   
     sb.WriteString("\n\n ")
     sb.WriteString("-"+m.User.Name)
     fmt.Println(sb.String())
