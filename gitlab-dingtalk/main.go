@@ -21,9 +21,11 @@ type ObjectAttributes struct{
     Status string `json:"status"`
     FinishedAt string `json:"finished_at" `
     Duration int `json:"duration"`
+    Ref string `json:"ref"`
 }
 type User struct{
     Name string `json:"name"`
+    AvatarUrl string `json:"avatar_url"`
 }
 type Commit struct{
     Id string `json:"id"`
@@ -100,12 +102,13 @@ func SendPipeline(m GitlabRequest) []byte{
     sb.WriteString(" [#"+strconv.Itoa(m.ObjectAttributes.Id)+"](")
     sb.WriteString(m.Project.WebUrl+"/-/pipelines/"+strconv.Itoa(m.ObjectAttributes.Id)+")")
    
+    sb.WriteString(" to "+m.ObjectAttributes.Ref)
     sb.WriteString("\n\n ")
     sb.WriteString("> ["+string([]byte(m.Commit.Id)[:6]))
     sb.WriteString("]("+m.Commit.Url+") "+m.Commit.Message)
    
     sb.WriteString("\n\n ")
-    sb.WriteString("-"+m.User.Name)
+    sb.WriteString(m.User.Name)
     fmt.Println(sb.String())
 
     text :=  new(DingtalkMd)

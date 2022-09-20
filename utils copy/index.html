@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello my friend</title></head>
+<body>
+    <style>.box{max-width: 800px;margin:20px auto;}.cont span{display: inline-block;min-width: 200px;}.copyright{color:#666;font-size: 12px;}.text-c{text-align: center;}</style>
+<div class="box">
+<h3>Hi my friend !</h3>
+<ul class="cont">
+    <li><span>Test Domain:</span> <a href="/baidu">To Baidu</a></li>
+    <li><span>Hostname:</span> {{hostname}}</li>
+    <li><span>Send HttpGet:</span> <input type="text" id="url" placeholder="url"/> <input value="Send" type="button" onclick="sendReq()" /></li>
+</ul>
+<div class="copyright"><p class="text-c">Copyright©powerby leechao</p><p class="text-c">version:{{version}}</p></div></div>
+<script>
+    function sendReq() {
+   var url= document.getElementById('url').value
+    if (!url) {
+        alert('url is undefined')
+        return
+    }
+    location.href='/http?url='+encodeURIComponent(url)
+}
+</script>
+</body></html>
