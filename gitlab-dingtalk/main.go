@@ -138,12 +138,22 @@ func Handler(c *gin.Context){
         panic(err)
     }
 
+    
+
     if kind.Kind == "pipeline" {
         var model  GitlabRequest
         if err := c.ShouldBindBodyWith(&model,binding.JSON); err != nil {
             panic(err)
         }
        
+        if model.ObjectAttributes.Status=="pending" || model.ObjectAttributes.Status=="running" {
+            c.JSON(200, gin.H{
+                "message": model.ObjectAttributes.Status+" filtered",
+            })
+            fmt.Println(model.ObjectAttributes.Status+" filtered")
+            return
+        }
+
         jsonBytes:=SendPipeline(model)
         c.Data(http.StatusOK,"application/json",jsonBytes)
     }
