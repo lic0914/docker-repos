@@ -146,7 +146,7 @@ func Handler(c *gin.Context){
             panic(err)
         }
        
-        if model.ObjectAttributes.Status=="pending" || model.ObjectAttributes.Status=="running" {
+        if model.ObjectAttributes.Status=="pending"  {
             c.JSON(200, gin.H{
                 "message": model.ObjectAttributes.Status+" filtered",
             })
