@@ -1,0 +1,12 @@
+    %{time_namelookup}s：time_namelookup(DNS解析延时)\n
+    %{time_connect}s: time_connect(TCP建连包含DNS解析)  \n
+    %{time_appconnect}s：time_appconnect(SSL握手包含TCP延时)  \n
+    %{time_pretransfer}s：time_pretransfer(客户端开始发送HTTP请求时延):  \n
+    %{time_starttransfer}s：time_starttransfer(获取客户端开始接收HTTP响应的第一个字节时延即TTFB)\n
+    ----------\n
+    %{time_total}s：time_total(总耗时):  \n
+
+    HTTP协议交互时延 = (time_total-time_pretransfer) \n
+    HTTP数据传输时延 = (time_total-time_starttransfer) \n
+    > https://zhuanlan.zhihu.com/p/102392474 \n
+    > https://cloud.tencent.com/developer/article/1718259 \n

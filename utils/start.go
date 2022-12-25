@@ -12,6 +12,8 @@ import (
     "os/signal"
     "syscall"
     "strings"
+    "time"
+    //"strconv"
     "github.com/joho/godotenv"
 )
 
@@ -49,8 +51,12 @@ func main() {
 	http.HandleFunc(BASE_URL+"/baidu",sendBaidu)
     http.HandleFunc(BASE_URL+"/http", sendHttp)
     http.HandleFunc(BASE_URL+"/header", getRemoteHeaders)
+    http.HandleFunc(BASE_URL+"/delay", delay)
+    http.HandleFunc(BASE_URL+"/curl-testing", curlTesting)
     http.HandleFunc("/", rootData)
-    fmt.Println("start server successfully! now listen port : "+PORT)
+    fmt.Println("Start server successfully!\nNow listen  0.0.0.0:"+PORT)
+    fmt.Println("Routes:\n [GET] /nslookup?host=baidu.com\n [GET] /baidu\n [GET] /http?url=http://baidu.com\n [GET] /header\n [GET] /delay?s=10" )
+    fmt.Println(" [GET] /curl-testing?url=https://baidu.com[&method=GET] \n" )
     http.ListenAndServe(":"+PORT, nil)
 }
 
@@ -137,6 +143,33 @@ func getRemoteHeaders(w http.ResponseWriter, req *http.Request){
         }
     }
     w.Write([]byte(sb.String()))
+}
+
+func delay(w http.ResponseWriter,req *http.Request){
+    query := req.URL.Query()
+    second := query.Get("s")
+    duration,_ := time.ParseDuration(second+"s")
+    time.Sleep(duration)
+    w.Write([]byte(second+"s后\nok\n")) 
+}
+
+func curlTesting(w http.ResponseWriter,req *http.Request){
+    w.Header().Set("Content-Type","text/plain; charset=utf-8")
+    
+    query := req.URL.Query()
+    url := query.Get("url")
+    method := query.Get("method") 
+    if method == "" {
+        method = "GET"
+    }
+    // alpine 镜像使用 sh
+    out, err := exec.Command("sh","-c","curl -s -o /dev/null -w \"@curl-testing-formatter.txt\" -X "+method + " "+ url ,).Output()
+	if err != nil {
+	    w.Write([]byte(err.Error()+"\n"))
+	}
+    w.Write(out)
+    w.Write([]byte("\n"))
+
 }
 
 // 捕获到退出信号后，执行的退出流程

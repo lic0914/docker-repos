@@ -15,8 +15,10 @@ FROM alpine:3.10
 WORKDIR /app
 LABEL author="leechao" mail="lic0914@163.com" MAINTAINER="leechao"
 RUN apk --no-cache add curl
+RUN apk --no-cache add bind-tools
 COPY --from=builder /app/start .
 COPY .env .
+COPY curl-testing-formatter.txt .
 COPY index.html .
 COPY index.txt .
 CMD ["./start"]

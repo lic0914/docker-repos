@@ -23,6 +23,10 @@ func main(){
 	fmt.Println("====")
 	bytes := execSample("baidu.com")
 	fmt.Print(string(bytes))
+	fmt.Println("====")
+	bytes = curlSample("baidu.com")
+	fmt.Print(string(bytes))
+	
 }
 
 func execSample(host string) []byte{
@@ -36,4 +40,14 @@ func execSample(host string) []byte{
         }
 	//	fmt.Print(string(cmdOutput.Bytes()))
         return cmdOutput.Bytes();
+}
+
+func curlSample(host string) []byte{
+	out, err := exec.Command("bash","-c","curl --help",host).Output()
+	if err != nil {
+		return []byte(err.Error())
+	}
+	
+	//	fmt.Print(string(cmdOutput.Bytes()))
+	return out;
 }
