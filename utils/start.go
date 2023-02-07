@@ -64,7 +64,7 @@ func main() {
     content := req.Header.Get("User-Agent")  
     path :="./index.html"
    
-    if path=="" || strings.Contains(content,"curl") {
+    if strings.Contains(content,"curl") || req.Header.Get("X-Requested-With") != "" {
         path = "./index.txt"
     }
     c, _ := ioutil.ReadFile(path)
@@ -98,6 +98,8 @@ func sendBaidu(w http.ResponseWriter, req *http.Request) {
 
 
 func nsLookup(w http.ResponseWriter, req *http.Request) {
+    log.Println("Executing nsLookup")
+
     query := req.URL.Query()
     host :=query.Get("host")
     ns,err := net.LookupHost(host)
@@ -118,6 +120,8 @@ func nsLookup(w http.ResponseWriter, req *http.Request) {
 }
 
 func sendHttp(w http.ResponseWriter, req *http.Request){
+    log.Println("Executing sendHttp")
+
     query := req.URL.Query()
     url :=query.Get("url")
     response, err := http.Get(url)
@@ -130,6 +134,8 @@ func sendHttp(w http.ResponseWriter, req *http.Request){
 }
 
 func getRemoteHeaders(w http.ResponseWriter, req *http.Request){
+    log.Println("Executing getRemoteHeaders")
+
     sb := strings.Builder{}
     sb.WriteString("Headers:\n")
     if len(req.Header) > 0 {
@@ -146,6 +152,7 @@ func getRemoteHeaders(w http.ResponseWriter, req *http.Request){
 }
 
 func delay(w http.ResponseWriter,req *http.Request){
+    log.Println("Executing deplay")
     query := req.URL.Query()
     second := query.Get("s")
     duration,_ := time.ParseDuration(second+"s")
@@ -154,6 +161,8 @@ func delay(w http.ResponseWriter,req *http.Request){
 }
 
 func curlTesting(w http.ResponseWriter,req *http.Request){
+    log.Println("Executing curlTesting")
+
     w.Header().Set("Content-Type","text/plain; charset=utf-8")
     
     query := req.URL.Query()
