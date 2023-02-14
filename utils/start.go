@@ -34,7 +34,7 @@ func main() {
 	// 创建监听退出 chan
 	c := make(chan os.Signal)
 	// 监听指定信号 ctrl+c kill ...
-	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGUSR1, syscall.SIGUSR2)
+	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
 	// 开启协程监听信号
 	go func() {
@@ -112,14 +112,14 @@ func proxyHandler(w http.ResponseWriter, r *http.Request) {
 	response, err := client.Do(req)
 	defer response.Body.Close()
 	var body []byte
-	if false {
-		//不进行解压缩
+	if response.Header.Get("Content-Encoding") != "" {
 		reader, err := gzip.NewReader(response.Body)
 		if err != nil {
-			panic(err)
+			fmt.Println("http resp unzip is failed,err: ", err)
 		}
-		defer reader.Close()
+
 		body, err = ioutil.ReadAll(reader)
+		defer reader.Close()
 		if err != nil {
 			panic(err)
 		}
@@ -131,6 +131,7 @@ func proxyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", req.Header.Get("Content-Type"))
+
 	w.Write(body)
 }
 
