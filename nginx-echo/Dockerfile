@@ -1,4 +1,5 @@
 FROM debian:bullseye-slim AS base
+RUN apt update && apt install -y ca-certificates curl telnet && rm -rf /var/lib/apt/lists/*
 LABEL maintainer="leechao lic0914@163.com"
 ENV NGINX_VERSION   1.28.0
 WORKDIR /etc/nginx
