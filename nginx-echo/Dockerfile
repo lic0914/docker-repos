@@ -1,6 +1,6 @@
 FROM debian:bullseye-slim AS base
 LABEL maintainer="leechao lic0914@163.com"
-ENV NGINX_VERSION   1.20.2
+ENV NGINX_VERSION   1.28.0
 WORKDIR /etc/nginx
 EXPOSE 80
 EXPOSE 443
@@ -8,15 +8,20 @@ EXPOSE 443
 FROM ubuntu:20.04 AS nginx-build
 WORKDIR /src
 ENV DEBIAN_FRONTEND=noninteractive
-ADD nginx-1.20.2.tar.gz ./
-ADD echo-nginx-module-0.62.tar.gz ./
+RUN apt-get update && apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev libxml2 libxml2-dev uuid-dev git
+ADD nginx-1.28.0.tar.gz ./
+ADD echo-nginx-module-0.64.tar.gz ./
 RUN ls -lh
 
-WORKDIR "/src/nginx-1.20.2"
-RUN apt-get update && apt-get install -y build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev libxml2 libxml2-dev uuid-dev
 
+WORKDIR "/src/nginx-1.28.0"
+
+RUN git clone https://github.com/chobits/ngx_http_proxy_connect_module.git
+RUN ls -lh ngx_http_proxy_connect_module
+RUN patch -p1 < ngx_http_proxy_connect_module/patch/proxy_connect_rewrite_102101.patch
 RUN ./configure \
---add-module=../echo-nginx-module-0.62 \
+--add-module=../echo-nginx-module-0.64 \
+--add-module=./ngx_http_proxy_connect_module \
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
 --modules-path=/usr/lib/nginx/modules \
